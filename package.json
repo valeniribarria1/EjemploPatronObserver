@@ -1,0 +1,13 @@
+{
+  "name": "patron-observer-pedido",
+  "version": "1.0.0",
+  "description": "Implementación del patrón Observer para flujo de pedidos",
+  "main": "app.js",
+  "scripts": {
+    "build": "tsc app.ts --outDir . --target es2017 --lib es2017,dom",
+    "dev": "tsc app.ts --outDir . --target es2017 --lib es2017,dom --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

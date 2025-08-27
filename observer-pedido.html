@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Observer — Pedido (Cocina / Repartidor / Cliente)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --b: #e5e7eb;
+        --bg: #fafafa;
+        --t: #111827;
+      }
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, "Helvetica Neue", Arial;
+        color: var(--t);
+        background: var(--bg);
+        margin: 24px;
+      }
+      h1 {
+        margin: 0 0 16px;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .card {
+        border: 1px solid var(--b);
+        border-radius: 12px;
+        background: #fff;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        min-height: 340px;
+      }
+      .title {
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .state {
+        font-size: 14px;
+        opacity: 0.8;
+        margin-bottom: 12px;
+      }
+      .btns {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      button {
+        padding: 6px 10px;
+        border: 1px solid var(--b);
+        background: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #f3f4f6;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .log {
+        flex: 1;
+        overflow: auto;
+        border: 1px dashed var(--b);
+        border-radius: 8px;
+        padding: 8px;
+        background: #fbfcff;
+        font-size: 14px;
+      }
+      .log > div {
+        padding: 6px 8px;
+        border: 1px solid #eef2ff;
+        background: #fff;
+        border-radius: 8px;
+        margin-bottom: 6px;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .pill {
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--b);
+        background: #fff;
+        font-size: 12px;
+      }
+      .footer {
+        margin-top: 16px;
+        font-size: 12px;
+        opacity: 0.7;
+      }
+      .status-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-left: 8px;
+      }
+      .subscribed {
+        background-color: #10b981;
+      }
+      .unsubscribed {
+        background-color: #ef4444;
+      }
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Patrón Observer — Flujo de Pedido (TS + HTML)</h1>
+    <div class="row">
+      <div class="pill">
+        Estado actual: <span id="estado-global">Creado</span>
+      </div>
+      <button id="reset">Reiniciar pedido</button>
+    </div>
+
+    <div class="grid">
+      <!-- Cocina -->
+      <section class="card">
+        <div class="title">
+          🍳 Cocina
+          <span id="cocina-status" class="status-indicator subscribed"></span>
+        </div>
+        <div class="state">
+          Acciones de cocina y panel que reacciona a cambios
+        </div>
+        <div class="btns">
+          <button id="btn-prep">Marcar "Preparándose"</button>
+          <button id="btn-listo">Marcar "Listo"</button>
+        </div>
+        <div id="log-cocina" class="log"></div>
+      </section>
+
+      <!-- Repartidor -->
+      <section class="card">
+        <div class="title">
+          🛵 Repartidor
+          <span
+            id="repartidor-status"
+            class="status-indicator subscribed"
+          ></span>
+        </div>
+        <div class="state">Acciones del repartidor y su panel</div>
+        <div class="btns">
+          <button id="btn-en-camino">Marcar "En camino"</button>
+          <button id="btn-entregado">Marcar "Entregado"</button>
+        </div>
+        <div id="log-repa" class="log"></div>
+      </section>
+
+      <!-- Cliente -->
+      <section class="card">
+        <div class="title">
+          👤 Cliente
+          <span id="cliente-status" class="status-indicator subscribed"></span>
+        </div>
+        <div class="state">Panel del cliente (solo observa)</div>
+        <div class="btns">
+          <!-- sin botones (solo observer) -->
+        </div>
+        <div id="log-cliente" class="log"></div>
+      </section>
+    </div>
+
+    <div class="footer">
+      * Botón → cambia estado del <strong>Pedido</strong> (sujeto) →
+      <strong>notify()</strong> → cada panel (observador) actualiza su caja.
+      <br />* Al completar su fase, ciertos observadores se
+      <strong>auto-desuscriben</strong> (Cocina al "Listo", Repartidor al
+      "Entregado"). <br />* Al <strong>reiniciar</strong>, todos los
+      observadores se vuelven a suscribir automáticamente. <br />* Los
+      indicadores de color muestran el estado de suscripción:
+      <span
+        class="status-indicator subscribed"
+        style="display: inline-block; margin: 0 4px"
+      ></span>
+      suscrito,
+      <span
+        class="status-indicator unsubscribed"
+        style="display: inline-block; margin: 0 4px"
+      ></span>
+      desuscrito.
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
